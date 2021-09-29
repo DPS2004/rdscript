@@ -12,20 +12,23 @@ function p(s)
 end
 
 function newconditional(n, exp)
+  local newid = #level.conditionals + 1
   table.insert(level.conditionals,{
-    id = #level.conditionals + 1, --this might not always work!!!!!
+    id = newid, --this might not always work!!!!!
     type = "Custom",
     name = n,
     expression = exp
   })
-  conditionalnames[n] = #level.conditionals + 1
-  p("conditional added: "..n..", "..exp)
+  conditionalnames[n] = #level.conditionals
+  p("conditional added: "..n..", "..exp..", id of ".. newid)
 end
 
-function runtag(bar,beat,dotag,conditional,checktag)
+function runtag(bar,beat,dotag,checktag,conditional)
   local ifval = nil
   if conditional then
     ifval = conditionalnames[conditional] .."d0"
+  else
+    conditional = "none"
   end
   table.insert(level.events,{
     bar = bar,
@@ -37,6 +40,7 @@ function runtag(bar,beat,dotag,conditional,checktag)
     Tag = dotag
   })
   level.events[#level.events]["if"] = ifval
+  print("runtag added: "..dotag..", conditional of ".. conditional)
 end
 
 function checkcommand(line,k)
@@ -139,7 +143,22 @@ for i,v in ipairs(script) do
   if v.command == "if" then
     ifcount = ifcount + 1
     newconditional("rscon_if_"..ifcount,v.parameters[1])
-    runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,"rscon_if_"..ifcount,layertags[layer])
+    runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+    layer = layer + 1
+    layertags[layer] = "rstag_if"..ifcount
+  end
+  if v.command == "tag" then
+    runtag(levelend[1],levelend[2],v.parameters[1],layertags[layer])
+  end
+  if v.command == "end" then
+    local oldlayer = layertags[layer]
+    layertags[layer] = "nil"
+    layer = layer - 1
+    local newlayer = layertags[layer]
+    if not newlayer then
+      newlayer = "NO LAYER"
+    end
+    p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
   end
 end
 
