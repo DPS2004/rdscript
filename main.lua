@@ -23,10 +23,11 @@ function newconditional(n, exp)
   p("conditional added: "..n..", "..exp..", id of ".. newid)
 end
 
-function runtag(bar,beat,dotag,checktag,conditional)
+function runtag(bar,beat,dotag,checktag,conditional,length)
   local ifval = nil
+  length = length or 0
   if conditional then
-    ifval = conditionalnames[conditional] .."d0"
+    ifval = conditionalnames[conditional] .."d"..length
   else
     conditional = "none"
   end
@@ -120,6 +121,7 @@ levelend = {99,1}
 layer = 0
 layertags = {}
 ifcount = 0
+whilecount = 0
 
 conditionalnames = {}
 
@@ -159,6 +161,12 @@ for i,v in ipairs(script) do
       newlayer = "NO LAYER"
     end
     p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
+  end
+  if v.command == "while" then
+    whilecount = whilecount + 1
+    runtag(v.parameters[1],v.parameters[2],"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
+    layer = layer + 1
+    layertags[layer] = "rstag_while_"..whilecount
   end
 end
 
