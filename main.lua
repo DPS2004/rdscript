@@ -164,9 +164,22 @@ for i,v in ipairs(script) do
   end
   if v.command == "while" then
     whilecount = whilecount + 1
-    runtag(v.parameters[1],v.parameters[2],"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
+    runtag(tonumber(v.parameters[1]),tonumber(v.parameters[2]),"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
     layer = layer + 1
     layertags[layer] = "rstag_while_"..whilecount
+  end
+  if v.command == "run" then
+    table.insert(level.events,{
+      bar = levelend[1],
+      beat = levelend[2],
+      y = 1,
+      type = "CallCustomMethod",
+      methodName = v.parameters[1],
+      tag = layertags[layer],
+      executionTime = "OnBar",
+      sortOffset = 0
+    })
+    p("added run custom method " .. v.parameters[1] .. " with tag "..layertags[layer])
   end
 end
 

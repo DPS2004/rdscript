@@ -15,7 +15,7 @@ end
 -- (bar, beat, length in beats)
 while(2, 1, 8)
 
-	if(p1Press)
+	if(upPress)
 		run(i0 = i0 + 1)
 	end
 
