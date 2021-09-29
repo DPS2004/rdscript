@@ -1,5 +1,5 @@
 chatty = true
-
+condensed = false
 
 function trim(s)
    return s:match "^%s*(.-)%s*$"
@@ -119,9 +119,11 @@ print("--------Processing Script--------")
 
 levelend = {99,1}
 layer = 0
+layertypes = {}
 layertags = {}
 ifcount = 0
 whilecount = 0
+cwhile = {duration = 0, bar = 99, beat=1}
 
 conditionalnames = {}
 
@@ -140,33 +142,61 @@ for i,v in ipairs(script) do
   if v.command == "define" then
     layer = layer + 1
     layertags[layer] = v.parameters[1]
+    layertypes[layer] = "define"
     p("layer set to ".. layer..", tag set to " .. layertags[layer])
   end
   if v.command == "if" then
     ifcount = ifcount + 1
     newconditional("rscon_if_"..ifcount,v.parameters[1])
-    runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+    if condensed then
+      runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+    else
+      if layertypes[layer] ~= "while" then
+        runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+      else
+        runtag(cwhile.bar,cwhile.beat,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount,cwhile.duration)
+      end
+    end
     layer = layer + 1
     layertags[layer] = "rstag_if"..ifcount
+    layertypes[layer] = "if"
   end
   if v.command == "tag" then
     runtag(levelend[1],levelend[2],v.parameters[1],layertags[layer])
   end
   if v.command == "end" then
-    local oldlayer = layertags[layer]
-    layertags[layer] = "nil"
-    layer = layer - 1
-    local newlayer = layertags[layer]
-    if not newlayer then
-      newlayer = "NO LAYER"
+    if condensed or layertypes[layer] ~= "while" then
+      local oldlayer = layertags[layer]
+      layertags[layer] = "nil"
+      layertypes[layer] = "nil"
+      layer = layer - 1
+      local newlayer = layertags[layer]
+      if not newlayer then
+        newlayer = "NO LAYER"
+      end
+      p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
+    else
+      p("ending uncondensed while layer")
+      layertypes[layer] = "nonwhile"
     end
-    p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
   end
   if v.command == "while" then
-    whilecount = whilecount + 1
-    runtag(tonumber(v.parameters[1]),tonumber(v.parameters[2]),"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
-    layer = layer + 1
-    layertags[layer] = "rstag_while_"..whilecount
+    if condensed then
+      p("starting condensed while loop")
+      whilecount = whilecount + 1
+      runtag(tonumber(v.parameters[1]),tonumber(v.parameters[2]),"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
+      layer = layer + 1
+      layertags[layer] = "rstag_while_"..whilecount
+      layertypes[layer] = "while"
+      
+    else
+      whilecount = whilecount + 1
+      layertypes[layer] = "while"
+      cwhile.duration = v.parameters[3]
+      cwhile.bar = tonumber(v.parameters[1])
+      cwhile.beat = tonumber(v.parameters[2])
+      p("starting uncondensed while loop")
+    end
   end
   if v.command == "run" then
     table.insert(level.events,{

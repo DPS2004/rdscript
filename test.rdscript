@@ -17,12 +17,14 @@ while(2, 1, 8)
 
 	if(upPress)
 		run(i0 = i0 + 1)
+    tag(otherthing) 
+    killme
 	end
 
 	if(i0 > 6)
   
 		tag(cooltag)
-		tag(otherthing) 
+		
 
 	end
 
