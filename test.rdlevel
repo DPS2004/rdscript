@@ -1,0 +1,58 @@
+﻿{
+	"settings":
+	{
+		"version": 48, 
+		"artist": "", 
+		"song": "", 
+		"specialArtistType": "None", 
+		"artistPermission": "", 
+		"artistLinks": "", 
+		"author": "", 
+		"difficulty": "Medium", 
+		"seizureWarning": false, 
+		"previewImage": "", 
+		"syringeIcon": "", 
+		"previewSong": "", 
+		"previewSongStartTime": 0, 
+		"previewSongDuration": 10, 
+		"songNameHue": 0.6615312, 
+		"description": "", 
+		"tags": "", 
+		"separate2PLevelFilename": "", 
+		"canBePlayedOn": "OnePlayerOnly", 
+		"firstBeatBehavior": "RunNormally", 
+		"multiplayerAppearance": "HorizontalStrips", 
+		"levelVolume": 1, 
+		"rankMaxMistakes": [20, 15, 10, 5], 
+
+		"rankDescription":
+		[
+			"Better call 911, now!",
+			"Ugh, you can do better",
+			"Not bad I guess...",
+			"We make a good team!",
+			"You are really good!",
+			"Wow! That's awesome!!"
+		]
+	},
+	"rows":
+	[
+		{ "character": "Samurai", "rowType": "Classic", "row": 0, "rooms": [0], "player": "P1", "pulseSound": "Kick", "pulseSoundVolume": 100, "pulseSoundPitch": 100, "pulseSoundPan": 0, "pulseSoundOffset": 0  },
+	],
+	"events":
+	[
+		{ "bar": 1, "beat": 1, "y": 0, "type": "PlaySong", "filename": "sndOrientalTechno", "volume": 100, "pitch": 100, "pan": 0, "offset": 0, "bpm": 100, "loop": false },
+		{ "bar": 1, "beat": 1, "y": 0, "type": "AddClassicBeat", "row": 0, "tick": 1, "swing": 0, "hold": 0 },
+		{ "bar": 1, "beat": 3, "y": 0, "type": "TagAction", "Action": "Run", "Tag": "otherthing" },
+		{ "bar": 4, "beat": 1, "y": 0, "type": "FinishLevel" },
+		{ "bar": 4, "beat": 1, "y": 1, "type": "FinishLevel" },
+		{ "bar": 4, "beat": 1, "y": 2, "type": "FinishLevel" },
+		{ "bar": 5, "beat": 1, "y": 0, "type": "SetPlayStyle", "PlayStyle": "Normal", "NextBar": 0, "Relative": true },
+		{ "bar": 6, "beat": 1, "y": 0, "type": "ShowStatusSign", "tag": "firstthing", "text": "First Thing", "duration": 4 },
+		{ "bar": 6, "beat": 2, "y": 0, "type": "ShowStatusSign", "tag": "secondthing", "text": "Second Thing", "duration": 4 },
+		{ "bar": 6, "beat": 3, "y": 0, "type": "ShowStatusSign", "tag": "otherthing", "text": "otherthing", "duration": 4 },
+	],
+	"conditionals":
+	[
+	]
+}
