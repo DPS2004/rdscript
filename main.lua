@@ -16,6 +16,7 @@ function checkcommand(line,k)
     p(k)
     local params = {}
     for i in string.gmatch(string.sub(line,#k+2), '([^,]+)') do
+      i = trim(i)
       table.insert(params,i)
       p(i)
     end
@@ -39,7 +40,7 @@ if arg[1] and arg[2] then
   scriptfile = arg[1]
   outfile = "out.rdlevel"
   if arg[3] then
-    outfile = "arg[3]"
+    outfile = arg[3]
   end
 else
   error("Not enough arguments were passed.")
@@ -76,9 +77,16 @@ for line in io.lines(scriptfile) do
   linenumber = linenumber + 1
 end
 
+if not level.conditionals then
+  level.conditionals = {}
+end
 
+table.insert(level.conditionals,{
+  id = #level.conditionals + 1, --this might not always work!!!!!
+  type = "Custom",
+  name = "rs_true",
+  expression = "0==0"
+})
 
-
-
-
+dpf.savejson(outfile,level)
   

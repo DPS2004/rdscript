@@ -54,5 +54,7 @@
 	],
 	"conditionals":
 	[
+		{ "id": 1, "type": "Custom", "name": "testcond", "expression": "0==0" },
+		{ "id": 2, "type": "Custom", "name": "testcond Clone", "expression": "0==0" },
 	]
 }
