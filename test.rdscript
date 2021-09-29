@@ -1,5 +1,5 @@
 levelend(6,1)
-
+--hello world!
 define(cooltag) 
 	
 	if(i0 == 7)
@@ -12,8 +12,8 @@ define(cooltag)
 
 end
 
-
-while(2, 1, 8) -- (bar, beat, length in beats)
+-- (bar, beat, length in beats)
+while(2, 1, 8) 
 
 	if(p1Press)
 		run(i0 = i0 + 1)
