@@ -1,5 +1,5 @@
 chatty = true
-condensed = false
+condensed = true
 
 function trim(s)
    return s:match "^%s*(.-)%s*$"
@@ -158,7 +158,7 @@ for i,v in ipairs(script) do
       end
     end
     layer = layer + 1
-    layertags[layer] = "rstag_if"..ifcount
+    layertags[layer] = "rstag_if_"..ifcount
     layertypes[layer] = "if"
   end
   if v.command == "tag" then
