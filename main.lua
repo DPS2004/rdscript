@@ -11,6 +11,34 @@ function p(s)
   end
 end
 
+function newconditional(n, exp)
+  table.insert(level.conditionals,{
+    id = #level.conditionals + 1, --this might not always work!!!!!
+    type = "Custom",
+    name = n,
+    expression = exp
+  })
+  conditionalnames[n] = #level.conditionals + 1
+  p("conditional added: "..n..", "..exp)
+end
+
+function runtag(bar,beat,dotag,conditional,checktag)
+  local ifval = nil
+  if conditional then
+    ifval = conditionalnames[conditional] .."d0"
+  end
+  table.insert(level.events,{
+    bar = bar,
+    beat = beat,
+    y = 0,
+    type = "TagAction",
+    tag = checktag,
+    Action = "Run",
+    Tag = dotag
+  })
+  level.events[#level.events]["if"] = ifval
+end
+
 function checkcommand(line,k)
   if string.sub(line,0,#k) == k then
     p(k)
@@ -77,16 +105,44 @@ for line in io.lines(scriptfile) do
   linenumber = linenumber + 1
 end
 
+
+
+
+
+
+print("--------Processing Script--------")
+
+levelend = {99,1}
+layer = 0
+layertags = {}
+ifcount = 0
+
+conditionalnames = {}
+
 if not level.conditionals then
   level.conditionals = {}
 end
 
-table.insert(level.conditionals,{
-  id = #level.conditionals + 1, --this might not always work!!!!!
-  type = "Custom",
-  name = "rs_true",
-  expression = "0==0"
-})
+newconditional("rs_true","0==0")
+
+
+for i,v in ipairs(script) do
+  if v.command == "levelend" then
+    levelend = {tonumber(v.parameters[1]),tonumber(v.parameters[2])}
+    p("level end set to bar ".. v.parameters[1] .. " beat " .. v.parameters[2])
+  end
+  if v.command == "define" then
+    layer = layer + 1
+    layertags[layer] = v.parameters[1]
+    p("layer set to ".. layer..", tag set to " .. layertags[layer])
+  end
+  if v.command == "if" then
+    ifcount = ifcount + 1
+    newconditional("rscon_if_"..ifcount,v.parameters[1])
+    runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,"rscon_if_"..ifcount,layertags[layer])
+  end
+end
+
 
 dpf.savejson(outfile,level)
   

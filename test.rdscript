@@ -6,14 +6,14 @@ define(cooltag)
 		tag(firstthing)
 	end
 	
-	if(i0 = 9)
+	if(i0 == 9)
 		tag(secondthing)
 	end
 
 end
 
 -- (bar, beat, length in beats)
-while(2, 1, 8) 
+while(2, 1, 8)
 
 	if(p1Press)
 		run(i0 = i0 + 1)
