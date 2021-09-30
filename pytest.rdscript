@@ -1,34 +1,21 @@
+python_mode(True)
 levelend(4)
 --hello world!
 define(cooltag) 
-	
+  
 	if(i0 == 7)
 		tag(firstthing)
-	end
 	
 	if(i0 == 9)
 		tag(secondthing)
-	end
-
-end
 
 -- makes for loop input more frame-accurate, at the cost of organization. may lead to wacky side-effects, not very tested!!!!
 setcondensed(false)
 
 -- (bar, beat, length in beats)
 for(1, 1, 16)
-
 	if(p1Press)
 		run(i0 = i0 + 1)
-    tag(otherthing)
-	end
-
+	tag(otherthing)
 	if(i0 > 6)
-  
 		tag(cooltag)
-		
-
-	end
-
-end
-

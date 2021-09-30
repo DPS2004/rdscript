@@ -46,10 +46,10 @@ function runtag(bar,beat,dotag,checktag,conditional,length)
 end
 
 function checkcommand(line,k)
-  if string.sub(line,0,#k) == k then
+  if string.sub(trim(line),0,#k) == k then
     p(k)
     local params = {}
-    for i in string.gmatch(string.sub(line,#k+2), '([^,]+)') do
+    for i in string.gmatch(string.sub(trim(line),#k+2), '([^,]+)') do
       i = trim(i)
       table.insert(params,i)
       p(i)
@@ -57,6 +57,25 @@ function checkcommand(line,k)
     if params[#params] then
       params[#params] = string.sub(params[#params],1,-2) --remove )
     end
+    if pythonmode then
+      local indent = string.find(line,k) - 1
+      if indent ~= 0 then
+        --indent found
+        if indentsize == -1 then
+          indentsize = indent
+        end
+        
+        indent = indent / indentsize -- get real indent number
+        if indent % 1 ~= 0 then
+          error("(Python Mode) Non-integer indent at line " .. linenumber .. ": " .. line)
+        end
+        if indent - (lastindent + 1) > 0 then
+          error("(Python Mode) Too big of an indent at line " .. linenumber .. ": " .. line .. " (" .. lastindent + 1 .. " or less expected, " .. indent .. " recieved)")
+        end
+      end
+      lastindent = indent
+    end
+    
     table.insert(script,{command = k,parameters = params,line=linenumber})
     return true
   else
@@ -80,17 +99,27 @@ else
   error("Not enough arguments were passed.")
   
 end
+
+pythonmode = false
+lastindent = 0
+indentsize = -1
+
 level = dpf.loadjson(levelfile)
 scriptlines = {}
 script = {}
 linenumber = 1
 for line in io.lines(scriptfile) do
-  line = trim(line)
-  if line ~= "" then
-    table.insert(scriptlines,line)
-    p("loading line "..line)
+  --line = trim(line)
+  if line == "python_mode(True)" then
+    pythonmode = true
+    p("Python mode activated.")
+  end
+  if trim(line) ~= "" then
+    table.insert(scriptlines,trim(line))
+    p("loading line "..trim(line))
     local found = false
     
+    if checkcommand(line,"python_mode") then found = true end
     if checkcommand(line,"levelend") then found = true end
     if checkcommand(line,"define") then found = true end
     if checkcommand(line,"if") then found = true end
@@ -99,8 +128,8 @@ for line in io.lines(scriptfile) do
     if checkcommand(line,"for") then found = true end
     if checkcommand(line,"run") then found = true end
     if checkcommand(line,"setcondensed") then found = true end
-    if found == false and string.sub(line,0,2) == "--" then
-      p("comment found: " .. line)
+    if found == false and string.sub(trim(line),0,2) == "--" then
+      p("comment found: " .. trim(line))
       found = true
     end
     if not found then
@@ -186,6 +215,9 @@ for i,v in ipairs(script) do
       local newlayer = layertags[layer]
       if not newlayer then
         newlayer = "NO LAYER"
+      end
+      if not oldlayer then
+        error("Unexpected 'end' at line " .. v.line)
       end
       p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
     else
