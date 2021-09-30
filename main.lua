@@ -27,13 +27,16 @@ function newconditional(n, exp)
   p("conditional added: "..n..", "..exp..", id of ".. newid)
 end
 
-function runtag(bar,beat,dotag,checktag,conditional,length)
+function runtag(bar,beat,dotag,checktag,conditional,length,ifoverride)
   local ifval = nil
   length = length or 0
   if conditional then
     ifval = conditionalnames[conditional] .."d"..length
   else
     conditional = "none"
+  end
+  if ifoverride then
+    ifval = ifoverride
   end
   table.insert(level.events,{
     bar = bar,
@@ -135,6 +138,7 @@ for line in io.lines(scriptfile) do
     if checkcommand(line,"if") then found = true end
     if checkcommand(line,"tag") then found = true end
     if checkcommand(line,"end") then found = true end
+    if checkcommand(line,"else") then found = true end
     if checkcommand(line,"for") then found = true end
     if checkcommand(line,"run") then found = true end
     if checkcommand(line,"setcondensed") then found = true end
@@ -164,6 +168,7 @@ levelend = 99
 layer = 0
 layertypes = {}
 layertags = {}
+layerifs = {}
 ifcount = 0
 forcount = 0
 cfor = {duration = 0, bar = 99, beat=1}
@@ -200,6 +205,9 @@ for i,v in ipairs(script) do
   if v.command == "if" then
     ifcount = ifcount + 1
     newconditional("rscon_if_"..ifcount,v.parameters[1])
+    
+    local lifdur = 0
+    
     if condensed then
       runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
     else
@@ -207,11 +215,15 @@ for i,v in ipairs(script) do
         runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
       else
         runtag(cfor.bar,cfor.beat,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount,cfor.duration)
+        lifdur = cfor.duration
       end
     end
     layer = layer + 1
     layertags[layer] = "rstag_if_"..ifcount
     layertypes[layer] = "if"
+    
+    
+    layerifs[layer] = conditionalnames["rscon_if_"..ifcount].."d"..lifdur
   end
   if v.command == "tag" then
     runtag(levelend,1,v.parameters[1],layertags[layer])
@@ -235,6 +247,46 @@ for i,v in ipairs(script) do
       layertypes[layer] = "nonfor"
     end
   end
+  
+  if v.command == "else" then
+    if layertypes[layer] == "if" then
+      
+      local oldlayer = layertags[layer]
+      layertags[layer] = "nil"
+      layertypes[layer] = "nil"
+      layer = layer - 1
+      local newlayer = layertags[layer]
+      if not newlayer then
+        newlayer = "NO LAYER"
+      end
+      if not oldlayer then
+        error("Unexpected 'else' at line " .. v.line)
+      end
+      p("ending layer via else, returning from " ..oldlayer.. " to " .. newlayer)
+      
+      -- the complicated part!
+      
+      if condensed then
+        runtag(levelend,1,"rstag_else_"..ifcount,layertags[layer],nil,nil,"~"..layerifs[layer+1])
+      else
+        if layertypes[layer] ~= "for" then
+          runtag(levelend,1,"rstag_else_"..ifcount,layertags[layer],nil,nil,"~"..layerifs[layer+1])
+        else
+          runtag(cfor.bar,cfor.beat,"rstag_else_"..ifcount,layertags[layer],nil,nil,"~"..layerifs[layer+1])
+          lifdur = cfor.duration
+        end
+      end
+      layer = layer + 1
+      layertags[layer] = "rstag_else_"..ifcount
+      layertypes[layer] = "else"
+      
+      
+    else
+      --aw hel nah
+      error("Unexpected 'else' at line " .. v.line)
+    end
+  end
+
   if v.command == "for" then
     if condensed then
       p("starting condensed for loop")

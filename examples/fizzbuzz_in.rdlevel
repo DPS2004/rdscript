@@ -44,13 +44,15 @@
 		{ "bar": 1, "beat": 1, "y": 0, "type": "PlaySong", "filename": "sndOrientalTechno", "volume": 100, "pitch": 100, "pan": 0, "offset": 0, "bpm": 100, "loop": false },
 		{ "bar": 1, "beat": 1, "y": 0, "type": "AddClassicBeat", "row": 0, "tick": 1, "swing": 0, "hold": 0 },
 		{ "bar": 1, "beat": 1, "y": 1, "type": "ShowDialogue", "text": "Press space to increment the variable!", "panelSide": "Bottom", "portraitSide": "Left", "speed": 1, "playTextSounds": true },
+		{ "bar": 1, "beat": 7, "y": 1, "type": "SetVFXPreset", "if": "~1d0", "rooms": [0], "preset": "SilhouettesOnHBeat", "enable": true },
 		{ "bar": 3, "beat": 1, "y": 0, "type": "ShowDialogue", "text": "Nice job. You got the variable to {i0}.", "panelSide": "Bottom", "portraitSide": "Left", "speed": 1, "playTextSounds": true },
 		{ "bar": 4, "beat": 1, "y": 0, "type": "FinishLevel" },
 		{ "bar": 4, "beat": 1, "y": 1, "type": "FinishLevel" },
 		{ "bar": 4, "beat": 1, "y": 2, "type": "FinishLevel" },
-		{ "bar": 6, "beat": 1, "y": 0, "type": "ShowStatusSign", "tag": "firstthing", "text": "7!", "duration": 4 },
-		{ "bar": 6, "beat": 2, "y": 0, "type": "ShowStatusSign", "tag": "secondthing", "text": "9!", "duration": 4 },
-		{ "bar": 6, "beat": 3, "y": 0, "type": "ShowStatusSign", "tag": "otherthing", "text": "not 7 or 9!", "duration": 4 },
+		{ "bar": 6, "beat": 1, "y": 0, "type": "ShowStatusSign", "tag": "disp_number", "text": "{i0}.", "duration": 4 },
+		{ "bar": 6, "beat": 2, "y": 0, "type": "ShowStatusSign", "tag": "disp_fizz", "text": "Fizz.", "duration": 4 },
+		{ "bar": 6, "beat": 3, "y": 0, "type": "ShowStatusSign", "tag": "disp_buzz", "text": "Buzz.", "duration": 4 },
+		{ "bar": 6, "beat": 4, "y": 0, "type": "ShowStatusSign", "tag": "disp_fizzbuzz", "text": "FizzBuzz.", "duration": 4 },
 	],
 	"conditionals":
 	[

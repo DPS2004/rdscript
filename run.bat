@@ -1,1 +1,1 @@
-lua main.lua test.rdscript test.rdlevel test_out.rdlevel
+lua main.lua examples/fizzbuzz.rdscript examples/fizzbuzz_in.rdlevel fizzbuzz.rdlevel

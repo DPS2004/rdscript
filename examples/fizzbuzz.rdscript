@@ -1,0 +1,32 @@
+levelend(4)
+
+setcondensed(false)
+
+-- (bar, beat, length in beats)
+for(1, 1, 16)
+
+	if(p1Press)
+		run(i0 = i0 + 1)
+    run(i1 = i0 % 3)
+    run(i2 = 10 % 5)
+    run(13 = i1 + i2)
+    
+    if(i3 == 0)
+      tag(disp_number)
+    end
+    if(i1 == 0)
+      if(i2 == 0)
+        tag(disp_fizzbuzz)
+      else
+        tag(disp_fizz)
+      end
+    end
+    if(i2 == 0)
+      if(i1 != 0)
+        tag(disp_buzz)
+      end
+    end
+	end
+
+end
+
