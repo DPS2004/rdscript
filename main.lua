@@ -1,5 +1,6 @@
 chatty = true
 condensed = true
+jsonsave = true
 
 function trim(s)
    return s:match "^%s*(.-)%s*$"
@@ -56,7 +57,7 @@ function checkcommand(line,k)
     if params[#params] then
       params[#params] = string.sub(params[#params],1,-2) --remove )
     end
-    table.insert(script,{command = k,parameters = params})
+    table.insert(script,{command = k,parameters = params,line=linenumber})
     return true
   else
     return false
@@ -110,14 +111,16 @@ for line in io.lines(scriptfile) do
   linenumber = linenumber + 1
 end
 
-
+if jsonsave then
+  dpf.savejson("parsed.json",script)
+end
 
 
 
 
 print("--------Processing Script--------")
 
-levelend = {99,1}
+levelend = 99
 layer = 0
 layertypes = {}
 layertags = {}
@@ -136,8 +139,17 @@ newconditional("rs_true","0==0")
 
 for i,v in ipairs(script) do
   if v.command == "levelend" then
-    levelend = {tonumber(v.parameters[1]),tonumber(v.parameters[2])}
-    p("level end set to bar ".. v.parameters[1] .. " beat " .. v.parameters[2])
+    levelend = tonumber(v.parameters[1]) + 2
+    table.insert(level.events,{
+      bar = levelend-1,
+      beat = 1,
+      y = 1,
+      type = "SetPlayStyle",
+      PlayStyle = "Normal",
+      NextBar = 0,
+      Relative = true
+    })
+    p("level end set to bar ".. v.parameters[1])
   end
   if v.command == "define" then
     layer = layer + 1
@@ -149,10 +161,10 @@ for i,v in ipairs(script) do
     ifcount = ifcount + 1
     newconditional("rscon_if_"..ifcount,v.parameters[1])
     if condensed then
-      runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+      runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
     else
       if layertypes[layer] ~= "while" then
-        runtag(levelend[1],levelend[2],"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
+        runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
       else
         runtag(cwhile.bar,cwhile.beat,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount,cwhile.duration)
       end
@@ -162,7 +174,7 @@ for i,v in ipairs(script) do
     layertypes[layer] = "if"
   end
   if v.command == "tag" then
-    runtag(levelend[1],levelend[2],v.parameters[1],layertags[layer])
+    runtag(levelend,1,v.parameters[1],layertags[layer])
   end
   if v.command == "end" then
     if condensed or layertypes[layer] ~= "while" then
@@ -200,8 +212,8 @@ for i,v in ipairs(script) do
   end
   if v.command == "run" then
     table.insert(level.events,{
-      bar = levelend[1],
-      beat = levelend[2],
+      bar = levelend,
+      beat = 1,
       y = 1,
       type = "CallCustomMethod",
       methodName = v.parameters[1],
@@ -212,6 +224,8 @@ for i,v in ipairs(script) do
     p("added run custom method " .. v.parameters[1] .. " with tag "..layertags[layer])
   end
 end
+
+
 
 
 dpf.savejson(outfile,level)

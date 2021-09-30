@@ -1,4 +1,4 @@
-levelend(6,1)
+levelend(4)
 --hello world!
 define(cooltag) 
 	
@@ -13,12 +13,11 @@ define(cooltag)
 end
 
 -- (bar, beat, length in beats)
-while(2, 1, 8)
+while(1, 1, 16)
 
-	if(upPress)
+	if(p1Press)
 		run(i0 = i0 + 1)
-    tag(otherthing) 
-    killme
+    tag(otherthing)
 	end
 
 	if(i0 > 6)
