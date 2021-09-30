@@ -2,9 +2,13 @@
 rdScript is a scripting language for making advanced Rhythm Doctor levels.
 
 
+## Requirements
+All this program requires is an installation of Lua, which can be gotten here: http://luabinaries.sourceforge.net/
+Alternatively, you can download a compiled version for Windows in the Releases tab.
+
 ## Basic Usage
 ```
-lua main.lua yourscript.rdscript yourlevel.rdlevel [outputlevel.rdlevel]
+rdscript yourscript.rdscript yourlevel.rdlevel [outputlevel.rdlevel]
 ```
 If no output file is provided, it will be saved to out.rdlevel
 
@@ -23,6 +27,9 @@ Provide true to enable condensed loops (the default) and false to disable conden
 
 ### end
 Ends a block. ¯\\\_(ツ)_/¯
+
+### levelend(bar)
+Put this at the top of your script, and set bar to the bar number with the *last* end level event of the level. Hopefully I can autodetect this in the future...
 
 ### tag(tag_name)
 Runs the tag.
