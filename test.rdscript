@@ -12,11 +12,11 @@ define(cooltag)
 
 end
 
--- makes while loop input more frame-accurate, at the cost of organization. may lead to wacky side-effects, not very tested!!!!
+-- makes for loop input more frame-accurate, at the cost of organization. may lead to wacky side-effects, not very tested!!!!
 setcondensed(false)
 
 -- (bar, beat, length in beats)
-while(1, 1, 16)
+for(1, 1, 16)
 
 	if(p1Press)
 		run(i0 = i0 + 1)

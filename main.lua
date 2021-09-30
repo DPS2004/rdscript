@@ -96,7 +96,7 @@ for line in io.lines(scriptfile) do
     if checkcommand(line,"if") then found = true end
     if checkcommand(line,"tag") then found = true end
     if checkcommand(line,"end") then found = true end
-    if checkcommand(line,"while") then found = true end
+    if checkcommand(line,"for") then found = true end
     if checkcommand(line,"run") then found = true end
     if checkcommand(line,"setcondensed") then found = true end
     if found == false and string.sub(line,0,2) == "--" then
@@ -126,8 +126,8 @@ layer = 0
 layertypes = {}
 layertags = {}
 ifcount = 0
-whilecount = 0
-cwhile = {duration = 0, bar = 99, beat=1}
+forcount = 0
+cfor = {duration = 0, bar = 99, beat=1}
 
 conditionalnames = {}
 
@@ -164,10 +164,10 @@ for i,v in ipairs(script) do
     if condensed then
       runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
     else
-      if layertypes[layer] ~= "while" then
+      if layertypes[layer] ~= "for" then
         runtag(levelend,1,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount)
       else
-        runtag(cwhile.bar,cwhile.beat,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount,cwhile.duration)
+        runtag(cfor.bar,cfor.beat,"rstag_if_"..ifcount,layertags[layer],"rscon_if_"..ifcount,cfor.duration)
       end
     end
     layer = layer + 1
@@ -178,7 +178,7 @@ for i,v in ipairs(script) do
     runtag(levelend,1,v.parameters[1],layertags[layer])
   end
   if v.command == "end" then
-    if condensed or layertypes[layer] ~= "while" then
+    if condensed or layertypes[layer] ~= "for" then
       local oldlayer = layertags[layer]
       layertags[layer] = "nil"
       layertypes[layer] = "nil"
@@ -189,26 +189,26 @@ for i,v in ipairs(script) do
       end
       p("ending layer, returning from " ..oldlayer.. " to " .. newlayer)
     else
-      p("ending uncondensed while layer")
-      layertypes[layer] = "nonwhile"
+      p("ending uncondensed for layer")
+      layertypes[layer] = "nonfor"
     end
   end
-  if v.command == "while" then
+  if v.command == "for" then
     if condensed then
-      p("starting condensed while loop")
-      whilecount = whilecount + 1
-      runtag(tonumber(v.parameters[1]),tonumber(v.parameters[2]),"rstag_while_"..whilecount,layertags[layer],"rs_true",v.parameters[3])
+      p("starting condensed for loop")
+      forcount = forcount + 1
+      runtag(tonumber(v.parameters[1]),tonumber(v.parameters[2]),"rstag_for_"..forcount,layertags[layer],"rs_true",v.parameters[3])
       layer = layer + 1
-      layertags[layer] = "rstag_while_"..whilecount
-      layertypes[layer] = "while"
+      layertags[layer] = "rstag_for_"..forcount
+      layertypes[layer] = "for"
       
     else
-      whilecount = whilecount + 1
-      layertypes[layer] = "while"
-      cwhile.duration = v.parameters[3]
-      cwhile.bar = tonumber(v.parameters[1])
-      cwhile.beat = tonumber(v.parameters[2])
-      p("starting uncondensed while loop")
+      forcount = forcount + 1
+      layertypes[layer] = "for"
+      cfor.duration = v.parameters[3]
+      cfor.bar = tonumber(v.parameters[1])
+      cfor.beat = tonumber(v.parameters[2])
+      p("starting uncondensed for loop")
     end
   end
   if v.command == "run" then
