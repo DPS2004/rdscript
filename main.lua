@@ -1,3 +1,6 @@
+json = require "json"
+dpf = require "dpf"
+
 chatty = true
 
 jsonsave = true
@@ -93,9 +96,6 @@ function checkcommand(line,k)
   end
   
 end
-
-json = require "json"
-dpf = require "dpf"
 
 if arg[1] and arg[2] then
   levelfile = arg[2]

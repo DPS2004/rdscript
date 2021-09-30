@@ -1,3 +1,9 @@
 test_out.rdlevel
 backup.rdlevel
 parsed.json
+buildmain.lua
+glue.exe
+out.rdlevel
+parsed.json
+rdscript.exe
+srlua.exe
