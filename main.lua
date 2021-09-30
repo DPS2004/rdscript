@@ -73,10 +73,19 @@ function checkcommand(line,k)
           error("(Python Mode) Too big of an indent at line " .. linenumber .. ": " .. line .. " (" .. lastindent + 1 .. " or less expected, " .. indent .. " recieved)")
         end
       end
+      table.insert(script,{command = k,parameters = params,line=linenumber})
+      indentoffset = (lastindent - indent)
+      if indentoffset > 0 then
+        --descending!
+        for i=1,indentoffset do
+          p("added fake 'end' for indents")
+          table.insert(script,{command = "end",parameters = {},line=linenumber-0.5})
+        end
+      end
       lastindent = indent
+    else
+      table.insert(script,{command = k,parameters = params,line=linenumber})
     end
-    
-    table.insert(script,{command = k,parameters = params,line=linenumber})
     return true
   else
     return false
