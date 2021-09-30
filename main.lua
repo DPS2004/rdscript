@@ -1,6 +1,6 @@
 chatty = true
-condensed = true
-jsonsave = true
+
+jsonsave = false
 
 function trim(s)
    return s:match "^%s*(.-)%s*$"
@@ -98,7 +98,7 @@ for line in io.lines(scriptfile) do
     if checkcommand(line,"end") then found = true end
     if checkcommand(line,"while") then found = true end
     if checkcommand(line,"run") then found = true end
-    
+    if checkcommand(line,"setcondensed") then found = true end
     if found == false and string.sub(line,0,2) == "--" then
       p("comment found: " .. line)
       found = true
@@ -120,6 +120,7 @@ end
 
 print("--------Processing Script--------")
 
+condensed = true
 levelend = 99
 layer = 0
 layertypes = {}
@@ -223,6 +224,15 @@ for i,v in ipairs(script) do
     })
     p("added run custom method " .. v.parameters[1] .. " with tag "..layertags[layer])
   end
+  if v.command == "setcondensed" then
+    if v.parameters[1] == "true" then
+      condensed = true
+    else
+      condensed = false
+    end
+    p("set condensed mode to " .. tostring(condensed))
+  end
+      
 end
 
 

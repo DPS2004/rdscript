@@ -12,6 +12,9 @@ define(cooltag)
 
 end
 
+-- makes while loop input more frame-accurate, at the cost of organization. may lead to wacky side-effects, not very tested!!!!
+setcondensed(false)
+
 -- (bar, beat, length in beats)
 while(1, 1, 16)
 
