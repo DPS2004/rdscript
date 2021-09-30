@@ -25,6 +25,9 @@ Starting at the provided bar and beat and lasting for the duration, code in this
 ### setcondensed(true/false)
 Provide true to enable condensed loops (the default) and false to disable condensed loops. Uncondensed loops execute frame-accurately, but there may be bugs. Use at your own risk.
 
+### python_mode(true/false)
+See below for more information.
+
 ### end
 Ends a block. ¯\\\_(ツ)_/¯
 
@@ -32,10 +35,13 @@ Ends a block. ¯\\\_(ツ)_/¯
 Put this at the top of your script, and set bar to the bar number with the *last* end level event of the level. Hopefully I can autodetect this in the future...
 
 ### tag(tag_name)
-Runs the tag.
+Runs a tag.
 
 ### run(method)
 Runs a custom method.
+
+## Python Mode
+Since some dislike putting end at the end of blocks, put python_mode(True) at the top of your rdscript file to enable Python Mode. This will cause the program to interpret one line having a smaller indent than the last line as an end command. See pytest.rdscript for an example of this.
 
 Check out test.rdlevel and test.rdscript for an example on how to put it all together.
 

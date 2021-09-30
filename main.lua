@@ -1,6 +1,6 @@
 chatty = true
 
-jsonsave = false
+jsonsave = true
 
 function trim(s)
    return s:match "^%s*(.-)%s*$"
@@ -73,7 +73,7 @@ function checkcommand(line,k)
           error("(Python Mode) Too big of an indent at line " .. linenumber .. ": " .. line .. " (" .. lastindent + 1 .. " or less expected, " .. indent .. " recieved)")
         end
       end
-      table.insert(script,{command = k,parameters = params,line=linenumber})
+      
       indentoffset = (lastindent - indent)
       if indentoffset > 0 then
         --descending!
@@ -83,6 +83,7 @@ function checkcommand(line,k)
         end
       end
       lastindent = indent
+      table.insert(script,{command = k,parameters = params,line=linenumber})
     else
       table.insert(script,{command = k,parameters = params,line=linenumber})
     end

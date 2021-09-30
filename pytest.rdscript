@@ -5,7 +5,7 @@ define(cooltag)
   
 	if(i0 == 7)
 		tag(firstthing)
-	
+  
 	if(i0 == 9)
 		tag(secondthing)
 
@@ -16,6 +16,6 @@ setcondensed(false)
 for(1, 1, 16)
 	if(p1Press)
 		run(i0 = i0 + 1)
-	tag(otherthing)
+    tag(otherthing)
 	if(i0 > 6)
 		tag(cooltag)
